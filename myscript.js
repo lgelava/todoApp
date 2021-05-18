@@ -1,134 +1,126 @@
-// Create a "close" button and append it to each list item
-var myNodelist = document.getElementsByTagName("LI");
-var i;
-for (i = 0; i < myNodelist.length; i++) {
-    var checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.className="checkbox"
-    myNodelist[i].appendChild(checkbox);
-
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
-  span.className = "close";
-  span.appendChild(txt);
-  myNodelist[i].appendChild(span);
-
-  var editForm = document.createElement('form');
-  editForm.className="editForm";
-  var editInput = document.createElement('input');
-  editInput.className="editInput";
-  editForm.appendChild(editInput); 
-  myNodelist[i].appendChild(editForm);
-  var editBtn = document.createElement('button');
-  var editText = document.createTextNode('edit');
-  editBtn.appendChild(editText);
-  editBtn.className="edit";
-  editBtn.onclick=onEditBtnClick();
-  myNodelist[i].appendChild(editBtn);
- 
-}
-
-// Click on a close button to hide the current list item
-var close = document.getElementsByClassName("close");
-var i;
-for (i = 0; i < close.length; i++) {
-  close[i].onclick = function() {
-    var div = this.parentElement;
-    div.remove();
-  }
-}
-
-
-
-// Create a new list item when clicking on the "Add" button
-function newElement() {
-  var li = document.createElement("li");
-  li.className="taskItem";
-  var inputValue = document.getElementById("myInput").value;
-  var t = document.createTextNode(inputValue);
-  li.appendChild(t);
-  if (inputValue === '') {
-    alert("You must write something!");
-  } else {
-    document.getElementById("myUL").appendChild(li);
-  }
-  document.getElementById("myInput").value = "";
-
-  var checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
+  const addTask = () => {
+    //Create Full LI
+    let taskList = document.getElementById('myUL');
+    let li = document.createElement('li');
+    li.className="listItem";
+    let checkbox = document.createElement('input');
     checkbox.className="checkbox";
-    myNodelist[i].appendChild(checkbox);
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
-  span.className = "close";
-  span.appendChild(txt);
-  li.appendChild(span);
-  
-  
- 
- 
-  var editForm = document.createElement('form');
-  editForm.className="editForm";
-  var editInput = document.createElement('input');
-  editInput.className="editInput";
-  editForm.appendChild(editInput); 
-  myNodelist[i].appendChild(editForm);
-  var editBtn = document.createElement('button');
-  editBtn.className="edit";
-  editBtn.onclick=onEditClickButton();
-  var editText = document.createTextNode('edit');
-  editBtn.appendChild(editText);
-  myNodelist[i].appendChild(editBtn);
-  
-
-  
-  
-
-  for (i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
-      var div = this.parentElement;
-      div.style.display = "none";
-    }
+    checkbox.type="checkbox";
+    li.appendChild(checkbox);
+    let addInput = document.querySelector('#addInput');
+    let liTitle = addInput.value;
+    let liTextNode = document.createTextNode(liTitle);
+    li.appendChild(liTextNode);
+    let deleteBtn = document.createElement('button');
+    deleteBtn.className='close';
+    let deleteBtnText = document.createTextNode('Delete');
+    deleteBtn.appendChild(deleteBtnText);
+    li.appendChild(deleteBtn);
+    let editBtn = document.createElement('button');
+    editBtn.className='edit';
+    let editBtnText = document.createTextNode('Edit');
+    editBtn.appendChild(editBtnText);
+    li.appendChild(editBtn);
+    let editForm = document.createElement('form');
+    editForm.className = 'editForm';
+    let editInput = document.createElement('input');
+    editInput.className = 'editInput';
+    editForm.appendChild(editInput);
+    let editSubmit = document.createElement('button');
+    editSubmit.className='submitEdit';
+    let editSubmitText = document.createTextNode('Submit');
+    editSubmit.appendChild(editSubmitText);
+    editForm.appendChild(editSubmit);
+    let editCancel = document.createElement('button');
+    editCancel.className="cancelEdit";
+    let editCancelText = document.createTextNode('Cancel');
+    editCancel.appendChild(editCancelText);
+    editForm.appendChild(editCancel);
+    li.appendChild(editForm);
+    //Ouput Lis in Task List
+    taskList.appendChild(li);
+    //Clear Input
+    addInput.value="";
+    //Delete Task
+    let close = document.getElementsByClassName("close");
+    let index;
+    for (index = 0; index < close.length; index++) {
+      close[index].onclick = (e) =>{
+        //aq vcade am funqciis garet gatana, magram ar imushava
+        e.target.parentNode.remove();
+      }
+  } 
+    //edit task
+    let editBtns = document.getElementsByClassName("edit");
+    let counter;
+    for (counter = 0; counter < editBtns.length; counter++) {
+      editBtns[counter].onclick = (e) =>{
+        //aq vcade am funqciis garet gatana, magram ar imushava
+        let editForms=document.querySelectorAll('.editForm')
+        //Display Hidden Edit Form
+        e.target.nextSibling.style.display="flex";   
+      }
+  }
+      //Cancel click
+      let cancelEdit = document.getElementsByClassName("cancelEdit");
+      let incrementer;
+      for (incrementer = 0; incrementer < editBtns.length; incrementer++) {
+        cancelEdit[incrementer].onclick = (e) =>{
+        //aq vcade am funqciis garet gatana, magram ar imushava
+        e.preventDefault();
+        //Hide Edit Form
+        e.target.parentNode.style.display="none";
+        //Clear Input
+        e.target.previousSibling.previousSibling.value='';
+      }
+  }
+      //Submit Click
+      let submitEdit = document.getElementsByClassName("submitEdit");
+      let incrementer2;
+      for (incrementer2 = 0; incrementer2 < editBtns.length; incrementer2++) {
+        submitEdit[incrementer2].onclick = (e) =>{
+        //aq vcade am funqciis garet gatana, magram ar imushava
+        e.preventDefault();
+        if(e.target.previousSibling.value !== ''){
+        e.target.parentNode.previousSibling.previousSibling.previousSibling.textContent = e.target.previousSibling.value; 
+        e.target.parentNode.style.display="none";
+        }else{
+          alert("You should edit the name");
+        }         
+      }
   }
 }
 
-//Edit
-var edit = document.getElementsByClassName("edit");
 
-
-
-//Check all
-let checkAll = document.getElementById('checkAll');
-checkAll.addEventListener('click', onCheckAll);
-
-function onCheckAll(){
-    let checkbox = document.querySelectorAll('.checkbox');
-    checkbox.forEach(element => {
-        element.checked = true;
+  //Check All
+  const checkAll = () => {
+    let checkboxes = document.querySelectorAll('.checkbox');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked=true;
+      
     });
-}
-
-
-//Uncheck All
-let unCheckAll = document.getElementById('unCheckAll');
-unCheckAll.addEventListener('click', onUnCheckAll);
-
-function onUnCheckAll(){
-    let checkbox = document.querySelectorAll('.checkbox');
-    checkbox.forEach(elem => {
-        elem.checked = false;
+  }
+ 
+  //Uncheck All
+  const unCheckAll = () => {
+    let checkboxes = document.querySelectorAll('.checkbox');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked=false;
+      
     });
-}
+  }
 
-//Delete All Checked
-let delCheckedAll = document.getElementById('delCheckedAll');
-delCheckedAll.addEventListener('click', onDelAllClick);
+ //Delete All Checked
+ const deleteAllChecked = () => {
+  let checkboxes = document.querySelectorAll('.checkbox');
+  let incrementer3;
+  for(incrementer3 = 0; incrementer3<checkboxes.length; incrementer3++){
+    if(checkboxes[incrementer3].checked){
+    checkboxes[incrementer3].parentNode.remove();
+  }
+ }
+ }
+  
 
-function onDelAllClick(){
-    let taskItem = document.querySelector('.taskItem');
-    let checkbox = document.querySelectorAll('.checkbox');
-    
-    
-    
-        
-    };
+
+

@@ -3,6 +3,7 @@
   margin-top: 100px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #myDIV {
@@ -15,6 +16,10 @@
   color: white;
 }
 
+#myUL {
+  margin-top: 15px;
+}
+
 .addBtn {
   background: green;
   margin-left: 10px;
@@ -22,15 +27,19 @@
 
 button {
   padding: 10px;
-  margin-left: 1px;
+  margin-left: 20px;
   font-weight: bold;
   color: white;
   border: none;
   border-radius: 10px;
 }
 
-.editForm {
-  display: inline-block;
+input {
+  border-radius: 5px;
+}
+
+.checkbox {
+  margin-right: 10px;
 }
 
 .edit {
@@ -38,8 +47,8 @@ button {
 }
 
 .close {
-  cursor: pointer;
-  color: red;
+  color: white;
+  background: red;
 }
 
 li {
@@ -48,6 +57,12 @@ li {
   align-items: center;
   margin-bottom: 10px;
   margin-top: 10px;
+  width: 100%;
+}
+
+.editForm {
+  margin-left: 20px;
+  display: none;
 }
 
 #checkAll,
@@ -56,9 +71,20 @@ li {
   background: lightblue;
   color: black;
   margin-top: 10px;
+  width: 150px;
 }
 
 #delCheckedAll {
   background: red;
   color: white;
+}
+
+.submitEdit,
+.cancelEdit {
+  background: pink;
+  color: black;
+}
+
+.bottomButtons {
+  display: flex;
 }

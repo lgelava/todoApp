@@ -13,16 +13,28 @@
   <body>
     <div class="container">
         <div id="myDIV" class="header">
-            <input type="text" id="myInput" placeholder="Title...">
-            <button onclick="newElement()" class="addBtn">Add</button>
+            <input type="text" id="addInput" placeholder="Title...">
+            <button class="addBtn" onclick="addTask()">Add</button>
         </div>
         
         <ul id="myUL">
-            
+            <!-- <li class="listItem"><input class="checkbox" type=checkbox> 
+              Task One
+              <button class="close">Delete</button>
+              <button class="edit">Edit</button>
+              <form class="editForm">
+                <input type="editInput">
+                <button class="submitEdit">Submit</button>
+                <button class="cancelEdit">Cancel</button>
+              </form>
+
+            </li> -->
         </ul>
-        <button id="checkAll">Check All</button>
-        <button id="unCheckAll">Uncheck All</button>
-        <button id="delCheckedAll">Delete all checked</button>
+        <div class="bottomButtons">
+          <button onclick="checkAll()" id="checkAll">Check All</button>
+          <button onclick="unCheckAll()" id="unCheckAll">Uncheck All</button>
+          <button onclick="deleteAllChecked()" id="delCheckedAll">Delete all checked</button>
+        </div>
     </div>   
    
   <script src="myscript.js"></script> 
