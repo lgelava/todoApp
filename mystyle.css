@@ -1,0 +1,64 @@
+.container {
+  width: 30%;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+#myDIV {
+  display: flex;
+  justify-content: center;
+}
+
+#myDIV input {
+  background-color: rgb(76, 77, 78);
+  color: white;
+}
+
+.addBtn {
+  background: green;
+  margin-left: 10px;
+}
+
+button {
+  padding: 10px;
+  margin-left: 1px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.editForm {
+  display: inline-block;
+}
+
+.edit {
+  background: blue;
+}
+
+.close {
+  cursor: pointer;
+  color: red;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+#checkAll,
+#unCheckAll,
+#delCheckedAll {
+  background: lightblue;
+  color: black;
+  margin-top: 10px;
+}
+
+#delCheckedAll {
+  background: red;
+  color: white;
+}
