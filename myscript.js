@@ -15,13 +15,18 @@
     deleteBtn.className='close';
     let deleteBtnText = document.createTextNode('Delete');
     deleteBtn.appendChild(deleteBtnText);
+   
+    deleteBtn.addEventListener('click',()=>{
+     return deleteTask(li)
+    })
+
     li.appendChild(deleteBtn);
     let editBtn = document.createElement('button');
     editBtn.className='edit';
     let editBtnText = document.createTextNode('Edit');
     editBtn.appendChild(editBtnText);
     li.appendChild(editBtn);
-    let editForm = document.createElement('form');
+    let editForm = document.createElement('div');
     editForm.className = 'editForm';
     let editInput = document.createElement('input');
     editInput.className = 'editInput';
@@ -30,74 +35,72 @@
     editSubmit.className='submitEdit';
     let editSubmitText = document.createTextNode('Submit');
     editSubmit.appendChild(editSubmitText);
+    editSubmit.addEventListener('click', () => {
+      return submitEdit(editSubmit);
+    })
     editForm.appendChild(editSubmit);
     let editCancel = document.createElement('button');
     editCancel.className="cancelEdit";
     let editCancelText = document.createTextNode('Cancel');
     editCancel.appendChild(editCancelText);
+    editCancel.addEventListener('click', () => {
+      return cancelEdit(editCancel);
+    })
     editForm.appendChild(editCancel);
     li.appendChild(editForm);
     //Ouput Lis in Task List
     taskList.appendChild(li);
+    editBtn.addEventListener('click', ()=>{
+      return editTask(editBtn);
+    })
     //Clear Input
     addInput.value="";
-    //Delete Task
-    let close = document.getElementsByClassName("close");
-    let index;
-    for (index = 0; index < close.length; index++) {
-      close[index].onclick = (e) =>{
-        //aq vcade am funqciis garet gatana, magram ar imushava
-        e.target.parentNode.remove();
-      }
-  } 
-    //edit task
-    let editBtns = document.getElementsByClassName("edit");
-    let counter;
-    for (counter = 0; counter < editBtns.length; counter++) {
-      editBtns[counter].onclick = (e) =>{
-        //aq vcade am funqciis garet gatana, magram ar imushava
-        let editForms=document.querySelectorAll('.editForm')
-        //Display Hidden Edit Form
-        e.target.nextSibling.style.display="flex";   
-      }
   }
-      //Cancel click
-      let cancelEdit = document.getElementsByClassName("cancelEdit");
-      let incrementer;
-      for (incrementer = 0; incrementer < editBtns.length; incrementer++) {
-        cancelEdit[incrementer].onclick = (e) =>{
-        //aq vcade am funqciis garet gatana, magram ar imushava
-        e.preventDefault();
-        //Hide Edit Form
-        e.target.parentNode.style.display="none";
-        //Clear Input
-        e.target.previousSibling.previousSibling.value='';
-      }
+
+  const deleteTask = (item) => {
+    item.parentNode.removeChild(item);
   }
+
+  const editTask = (editBtn) => {
+      //Display Hidden Edit Form
+      editBtn.nextSibling.style.display="flex";       
+      editBtn.nextSibling.childNodes[0].value = editBtn.parentNode.childNodes[1].textContent;
+      //Hide Li
+      editBtn.parentNode.childNodes[0].style.display="none";
+      editBtn.style.display="none";
+      editBtn.parentNode.childNodes[1].textContent = '';
+      editBtn.parentNode.childNodes[2].style.display="none"; 
+  }
+  
+  const cancelEdit = (editCancel) => {
+    //Cancel click
+      //Hide Edit Form
+      editCancel.parentNode.style.display="none";
+       //Show Li
+       editCancel.parentNode.parentNode.childNodes[0].style.display="block";
+       editCancel.parentNode.parentNode.childNodes[1].textContent = editCancel.parentNode.childNodes[0].value;
+       editCancel.parentNode.parentNode.childNodes[2].style.display="flex";
+       editCancel.parentNode.previousSibling.style.display="block";
+      //Clear Input
+      editCancel.previousSibling.previousSibling.value='';
+  }
+
+  const submitEdit = (editSubmit) => {
       //Submit Click
-      let submitEdit = document.getElementsByClassName("submitEdit");
-      let incrementer2;
-      for (incrementer2 = 0; incrementer2 < editBtns.length; incrementer2++) {
-        submitEdit[incrementer2].onclick = (e) =>{
-        //aq vcade am funqciis garet gatana, magram ar imushava
-        e.preventDefault();
-        if(e.target.previousSibling.value !== ''){
-        e.target.parentNode.previousSibling.previousSibling.previousSibling.textContent = e.target.previousSibling.value; 
-        e.target.parentNode.style.display="none";
-        }else{
-          alert("You should edit the name");
-        }         
-      }
-  }
-}
-
-
+      editSubmit.parentNode.previousSibling.previousSibling.previousSibling.textContent = editSubmit.previousSibling.value; 
+      //Show Li
+      editSubmit.parentNode.parentNode.childNodes[0].style.display="block";
+      editSubmit.parentNode.parentNode.childNodes[2].style.display="flex";
+      editSubmit.parentNode.previousSibling.style.display="block";
+      //Hide Edit Form
+      editSubmit.parentNode.style.display="none";
+      }        
+    
   //Check All
   const checkAll = () => {
     let checkboxes = document.querySelectorAll('.checkbox');
     checkboxes.forEach((checkbox) => {
-      checkbox.checked=true;
-      
+      checkbox.checked=true;  
     });
   }
  
@@ -105,8 +108,7 @@
   const unCheckAll = () => {
     let checkboxes = document.querySelectorAll('.checkbox');
     checkboxes.forEach((checkbox) => {
-      checkbox.checked=false;
-      
+      checkbox.checked=false; 
     });
   }
 
