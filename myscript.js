@@ -1,4 +1,4 @@
-  const addTask = () => {
+    const addTask = () => {
     //Create Full LI
     let taskList = document.getElementById('myUL');
     let li = document.createElement('li');
@@ -6,6 +6,9 @@
     let checkbox = document.createElement('input');
     checkbox.className="checkbox";
     checkbox.type="checkbox";
+    checkbox.addEventListener('change', () =>{
+      return showBtns(checkbox);
+    })
     li.appendChild(checkbox);
     let addInput = document.querySelector('#addInput');
     let liTitle = document.createElement('p');
@@ -17,8 +20,8 @@
     deleteBtn.appendChild(deleteBtnText);
    
     deleteBtn.addEventListener('click',()=>{
-     return deleteTask(li)
-    })
+     return deleteTask(li);
+    });
 
     li.appendChild(deleteBtn);
     let editBtn = document.createElement('button');
@@ -49,16 +52,42 @@
     editForm.appendChild(editCancel);
     li.appendChild(editForm);
     //Ouput Lis in Task List
-    taskList.appendChild(li);
+    if (liTitle.textContent===''){
+      alert('You should write something')
+    }else{
+      taskList.appendChild(li);
+    }
+   
     editBtn.addEventListener('click', ()=>{
       return editTask(editBtn);
     })
     //Clear Input
     addInput.value="";
+    //Show check all
+    let checkAll = document.getElementById('checkAll');
+    checkAll.style.display="block";
+
+    //On one unchecked
+    onOneUnchecked();
+  
   }
+  
+  //Submit Add Task on enter
+  let inputAdd = document.getElementById('addInput');
+  inputAdd.addEventListener('keyup', (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+        addTask();
+      }
+  });
+
 
   const deleteTask = (item) => {
     item.parentNode.removeChild(item);
+    //Hide CheckAll if needed
+    hideCheckedAll();
+    //Make CHeck all/uncheck all after delete button is clicked
+    checkAllBoxes2();
   }
 
   const editTask = (editBtn) => {
@@ -68,7 +97,7 @@
       //Hide Li
       editBtn.parentNode.childNodes[0].style.display="none";
       editBtn.style.display="none";
-      editBtn.parentNode.childNodes[1].textContent = '';
+      editBtn.parentNode.childNodes[1].style.display="none";
       editBtn.parentNode.childNodes[2].style.display="none"; 
       editBtn.parentNode.style.marginLeft="-70px";
      
@@ -80,17 +109,15 @@
       editCancel.parentNode.style.display="none";
        //Show Li
        editCancel.parentNode.parentNode.childNodes[0].style.display="block";
-       editCancel.parentNode.parentNode.childNodes[1].textContent = editCancel.parentNode.childNodes[0].value;
+       editCancel.parentNode.parentNode.childNodes[1].style="block";
        editCancel.parentNode.parentNode.childNodes[2].style.display="flex";
        editCancel.parentNode.previousSibling.style.display="block";
-       editCancel.parentNode.previousSibling.parentNode.style.marginLeft="0px";
-      //Clear Input
-      editCancel.previousSibling.previousSibling.value='';
-      
+       editCancel.parentNode.previousSibling.parentNode.style.marginLeft="0px"; 
   }
 
   const submitEdit = (editSubmit) => {
       //Submit Click
+      editSubmit.parentNode.previousSibling.previousSibling.previousSibling.style.display="block";
       editSubmit.parentNode.previousSibling.previousSibling.previousSibling.textContent = editSubmit.previousSibling.value; 
       //Show Li
       editSubmit.parentNode.parentNode.childNodes[0].style.display="block";
@@ -102,33 +129,117 @@
       editSubmit.parentNode.style.display="none";
       }        
     
-  //Check All
-  const checkAll = () => {
-    let checkboxes = document.querySelectorAll('.checkbox');
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked=true;  
-    });
-  }
  
-  //Uncheck All
-  const unCheckAll = () => {
-    let checkboxes = document.querySelectorAll('.checkbox');
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked=false; 
-    });
-  }
 
  //Delete All Checked
  const deleteAllChecked = () => {
   let checkboxes = document.querySelectorAll('.checkbox');
   let incrementer3;
+  let checkAll = document.getElementById('checkAll');
+  let delCheckedAll = document.getElementById('delCheckedAll');
+  delCheckedAll.style.display="none";
   for(incrementer3 = 0; incrementer3<checkboxes.length; incrementer3++){
     if(checkboxes[incrementer3].checked){
     checkboxes[incrementer3].parentNode.remove();
+    checkAll.textContent="Check All";
+    //Hide checked all if needed
+    hideCheckedAll();
   }
  }
  }
+
+
+// Show bottom bottom buttons if checked
+const showBtns = (checkbox) => {
   
+  let checkAll = document.getElementById('checkAll');
+  let delCheckedAll = document.getElementById('delCheckedAll');
+  const allChecked = (item) => item.checked;
+  const allUnChecked = (item2) => item2.checked===false;
+  const oneChecked = (item3) => item3.checked;
+  const oneUnchecked = (item4) => item4.checked===false;
+  let checkboxes = document.querySelectorAll('.checkbox');
+  //checkboxes collection to an array
+  let arrCheckboxes = Array.prototype.slice.call( checkboxes, 0 );
+  onOneUnchecked();
+  if((arrCheckboxes).every(allChecked)){
+    checkAll.textContent="Uncheck All";
+  }
+  arrCheckboxes.filter(checkbox =>{
+    if(arrCheckboxes.some(oneChecked)){
+      delCheckedAll.style.display="block";
+      
+    }else if (arrCheckboxes.every(allUnChecked)){
+      delCheckedAll.style.display="none";
+    }
+})
+}
 
 
+const onOneUnchecked = () => {
+  let checkAll = document.getElementById('checkAll');
+  const oneUnchecked = (item4) => item4.checked===false;
+  let checkboxes = document.querySelectorAll('.checkbox');
+  //checkboxes collection to an array
+  let arrCheckboxes = Array.prototype.slice.call( checkboxes, 0 );
+  if((arrCheckboxes).some(oneUnchecked)){
+    checkAll.textContent="Check All";
+  }
+}
 
+
+//Ccheck all/ uncheck all
+const checkAllBoxes = () => {
+  let checkboxes = document.querySelectorAll('.checkbox');
+  let checkAll = document.getElementById('checkAll');
+ 
+  //checkboxes collection to an array
+  let arrCheckboxes = Array.prototype.slice.call( checkboxes );
+  
+  const checkIfAllChecked = arrCheckboxes.every(el => el.checked);
+
+  return arrCheckboxes.map(el => {
+    if(checkIfAllChecked===false){
+      el.checked=true;
+      checkAll.textContent="Uncheck All";
+    }else{
+      
+      el.checked=false;
+      checkAll.textContent="Check All";
+    }
+  })
+}
+
+//Make CHeck all/uncheck all after delete button is clicked
+const checkAllBoxes2 = () => {
+  let checkboxes = document.querySelectorAll('.checkbox');
+  let checkAll = document.getElementById('checkAll');
+ 
+  //checkboxes collection to an array
+  let arrCheckboxes = Array.prototype.slice.call( checkboxes );
+  
+  const checkIfAllChecked = arrCheckboxes.every(el => el.checked);
+
+  return arrCheckboxes.map(el => {
+    if(checkIfAllChecked===false){
+      
+      el.checked=false;
+      checkAll.textContent="Check All";
+    }else{
+      el.checked=true;
+      checkAll.textContent="Uncheck All";
+    }
+  })
+}
+
+
+//hide Check All
+const hideCheckedAll = () => {
+  let checkAll = document.getElementById('checkAll');
+  let lis = document.getElementsByTagName('LI');
+  lis.length === 0 ? checkAll.style.display="none" : null  
+}
+
+let checkbox = document.createElement('input');
+checkbox.className="checkbox";
+checkbox.type="checkbox";

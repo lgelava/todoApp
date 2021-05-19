@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.header {
+  display: flex;
+}
+
 #myDIV input {
   background-color: rgb(76, 77, 78);
   color: white;
@@ -73,6 +77,7 @@ li p {
   color: black;
   margin-top: 10px;
   width: 150px;
+  display: none;
 }
 
 #delCheckedAll {
