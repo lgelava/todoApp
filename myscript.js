@@ -8,9 +8,9 @@
     checkbox.type="checkbox";
     li.appendChild(checkbox);
     let addInput = document.querySelector('#addInput');
-    let liTitle = addInput.value;
-    let liTextNode = document.createTextNode(liTitle);
-    li.appendChild(liTextNode);
+    let liTitle = document.createElement('p');
+    liTitle.textContent = addInput.value;
+    li.appendChild(liTitle);
     let deleteBtn = document.createElement('button');
     deleteBtn.className='close';
     let deleteBtnText = document.createTextNode('Delete');
@@ -70,6 +70,8 @@
       editBtn.style.display="none";
       editBtn.parentNode.childNodes[1].textContent = '';
       editBtn.parentNode.childNodes[2].style.display="none"; 
+      editBtn.parentNode.style.marginLeft="-70px";
+     
   }
   
   const cancelEdit = (editCancel) => {
@@ -81,8 +83,10 @@
        editCancel.parentNode.parentNode.childNodes[1].textContent = editCancel.parentNode.childNodes[0].value;
        editCancel.parentNode.parentNode.childNodes[2].style.display="flex";
        editCancel.parentNode.previousSibling.style.display="block";
+       editCancel.parentNode.previousSibling.parentNode.style.marginLeft="0px";
       //Clear Input
       editCancel.previousSibling.previousSibling.value='';
+      
   }
 
   const submitEdit = (editSubmit) => {
@@ -92,6 +96,8 @@
       editSubmit.parentNode.parentNode.childNodes[0].style.display="block";
       editSubmit.parentNode.parentNode.childNodes[2].style.display="flex";
       editSubmit.parentNode.previousSibling.style.display="block";
+
+      editSubmit.parentNode.previousSibling.parentNode.style.marginLeft="0px";
       //Hide Edit Form
       editSubmit.parentNode.style.display="none";
       }        
