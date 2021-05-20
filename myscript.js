@@ -69,7 +69,9 @@
 
     //On one unchecked
     onOneUnchecked();
-  
+
+    //pagination
+    paginationOnAddClick(li);
   }
   
   //Submit Add Task on enter
@@ -87,9 +89,11 @@
     //Hide CheckAll if needed
     hideCheckedAll();
     //Make CHeck all/uncheck all after delete button is clicked
-    checkAllBoxes2();
+    // checkAllBoxes();
     //If all unchecked hide deleteAllchecked
     allUnchecked();
+    //If all checked
+    checkAllBoxes2();
   }
 
   const editTask = (editBtn) => {
@@ -119,7 +123,10 @@
 
   const submitEdit = (editSubmit) => {
       //Submit Click
-      editSubmit.parentNode.previousSibling.previousSibling.previousSibling.style.display="block";
+      if(editSubmit.parentNode.childNodes[0].value===''){
+        alert('You should write something')
+        }else{
+        editSubmit.parentNode.previousSibling.previousSibling.previousSibling.style.display="block";
       editSubmit.parentNode.previousSibling.previousSibling.previousSibling.textContent = editSubmit.previousSibling.value; 
       //Show Li
       editSubmit.parentNode.parentNode.childNodes[0].style.display="block";
@@ -129,7 +136,10 @@
       editSubmit.parentNode.previousSibling.parentNode.style.marginLeft="0px";
       //Hide Edit Form
       editSubmit.parentNode.style.display="none";
-      }        
+        }
+      };
+      
+       
     
  
 
@@ -167,14 +177,15 @@ const showBtns = (checkbox) => {
   if((arrCheckboxes).every(allChecked)){
     checkAll.textContent="Uncheck All";
   }
-  arrCheckboxes.filter(checkbox =>{
+
+  // const isAllChecked = arrCheckboxes.some(el => el.checked)
+
     if(arrCheckboxes.some(oneChecked)){
       delCheckedAll.style.display="block";
       
     }else if (arrCheckboxes.every(allUnChecked)){
       delCheckedAll.style.display="none";
-    }
-})
+   }
 }
 
 
@@ -209,27 +220,29 @@ const checkAllBoxes = () => {
  
   //checkboxes collection to an array
   let arrCheckboxes = Array.prototype.slice.call( checkboxes );
-  
   const checkIfAllChecked = arrCheckboxes.every(el => el.checked);
-
+  const oneChecked = arrCheckboxes.some(el => el.checked);
   return arrCheckboxes.map(el => {
     if(checkIfAllChecked===false){
       el.checked=true;
       checkAll.textContent="Uncheck All";
-    }else{
-      
+      showBtns();
+    }else if(checkIfAllChecked){
       el.checked=false;
       checkAll.textContent="Check All";
+      showBtns();
+    // }else if(onChecked){
+    //   checkAll.textContent="Uncheck All";
     }
-  })
+    
+    })
 }
 
-//Make CHeck all/uncheck all after delete button is clicked
+// Make CHeck all/uncheck all after delete button is clicked
 const checkAllBoxes2 = () => {
   let checkboxes = document.querySelectorAll('.checkbox');
   let checkAll = document.getElementById('checkAll');
  
-  //checkboxes collection to an array
   let arrCheckboxes = Array.prototype.slice.call( checkboxes );
   
   const checkIfAllChecked = arrCheckboxes.every(el => el.checked);
@@ -254,6 +267,45 @@ const hideCheckedAll = () => {
   lis.length === 0 ? checkAll.style.display="none" : null  
 }
 
-let checkbox = document.createElement('input');
-checkbox.className="checkbox";
-checkbox.type="checkbox";
+
+
+//Pagination
+  const paginationOnAddClick = (item) => {
+  let currentPage = 0;
+  let numberPerPage = 5;
+  let numberOfPages = 0;
+  let lis = document.getElementsByTagName('LI');
+  let arrLis = Array.prototype.slice.call( lis, 0 );
+  numberOfPages = Math.ceil(arrLis.length / numberPerPage);
+  let taskList = document.getElementById('myUL');
+  let screens = document.getElementById('screens');
+  if(arrLis.length > numberPerPage && arrLis.length % numberPerPage === 1){
+   
+    numberOfPages++;
+    let nextScreen = document.createElement('ul'); 
+    nextScreen.classList=('myUL nextUl');
+    screens.appendChild(nextScreen);
+    console.log((screens.childNodes[currentPage+2])); 
+    screens.children[currentPage].style.display="none";
+    screens.children[currentPage+1].appendChild(item);
+    
+  // }else if (arrLis.length % numberPerPage === 1){
+  //   screens.children[currentPage+1].appendChild(item);
+  // }
+}
+  }
+    
+  
+  
+    // nextScreens[1].appendChild(item);
+     
+    // nextScreen.previousElementSibling.style.display="none"; 
+    // console.log(nextScreen.previousElementSibling);
+    
+  
+    
+  
+  
+  
+ 
+
