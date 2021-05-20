@@ -88,6 +88,8 @@
     hideCheckedAll();
     //Make CHeck all/uncheck all after delete button is clicked
     checkAllBoxes2();
+    //If all unchecked hide deleteAllchecked
+    allUnchecked();
   }
 
   const editTask = (editBtn) => {
@@ -188,7 +190,19 @@ const onOneUnchecked = () => {
 }
 
 
-//Ccheck all/ uncheck all
+//if all unchecked
+const allUnchecked = () => {
+  let checkboxes = document.querySelectorAll('.checkbox');
+  let arrCheckboxes = Array.prototype.slice.call( checkboxes );
+  let delCheckedAll = document.getElementById('delCheckedAll');
+  const checkIfAllUnChecked = arrCheckboxes.every(el => el.checked===false);
+  if(checkIfAllUnChecked===true){
+    delCheckedAll.style.display="none";
+  }
+}
+
+
+//Check all/ uncheck all
 const checkAllBoxes = () => {
   let checkboxes = document.querySelectorAll('.checkbox');
   let checkAll = document.getElementById('checkAll');
