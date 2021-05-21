@@ -16,17 +16,29 @@
             <input type="text" id="addInput" placeholder="Title...">
             <button class="addBtn" onclick="addTask()">Add</button>
         </div>
-        <div id="screens">
-        <ul id="myUL" class="myUL">
-            
-        </ul>
+        <div class="pagination">
+          <div id="screens">
+            <ul id="myUL" class="myUL">
+                
+            </ul>
+          </div>
+          <div class="paginationBtnsDiv">
+            <button onClick="pageOneClick()" class="page1 pages">1</button>
+          </div>
         </div>
         <div class="bottomButtons">
           <button onclick="checkAllBoxes()" id="checkAll">Check All</button>
           <button onclick="deleteAllChecked()" id="delCheckedAll">Delete all checked</button>
         </div>
     </div>   
-   
+    <!-- <div style="text-align:center;">
+      <input type="button" id="first" onclick="firstPage()" value="first" />
+      <input type="button" id="next" onclick="nextPage()" value="next" />
+      <input type="button" id="previous" onclick="previousPage()" value="previous" />
+      <input type="button" id="last" onclick="lastPage()" value="last" />
+  
+      <div id="list"></div>
+      </div> -->
   <script src="myscript.js"></script> 
   </body>
 </html>

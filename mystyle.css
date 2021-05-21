@@ -94,3 +94,22 @@ li p {
 .bottomButtons {
   display: flex;
 }
+
+.page1 {
+  display: none;
+}
+
+.paginationBtnsDiv {
+  justify-content: center;
+  display: flex;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pages {
+  background: green;
+}

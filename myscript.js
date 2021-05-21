@@ -33,6 +33,7 @@
     editForm.className = 'editForm';
     let editInput = document.createElement('input');
     editInput.className = 'editInput';
+    
     editForm.appendChild(editInput);
     let editSubmit = document.createElement('button');
     editSubmit.className='submitEdit';
@@ -52,12 +53,12 @@
     editForm.appendChild(editCancel);
     li.appendChild(editForm);
     //Ouput Lis in Task List
-    if (liTitle.textContent===''){
-      alert('You should write something')
-    }else{
+    if (liTitle.textContent!==''){
       taskList.appendChild(li);
+    }else{
+      let checkAll = document.getElementById('checkAll');
     }
-   
+  
     editBtn.addEventListener('click', ()=>{
       return editTask(editBtn);
     })
@@ -76,13 +77,14 @@
   
   //Submit Add Task on enter
   let inputAdd = document.getElementById('addInput');
+  
   inputAdd.addEventListener('keyup', (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
         addTask();
       }
   });
-
+  
 
   const deleteTask = (item) => {
     item.parentNode.removeChild(item);
@@ -94,6 +96,8 @@
     allUnchecked();
     //If all checked
     checkAllBoxes2();
+    //pagination on delete click
+    paginationOnDeleteClick(item);
   }
 
   const editTask = (editBtn) => {
@@ -178,7 +182,6 @@ const showBtns = (checkbox) => {
     checkAll.textContent="Uncheck All";
   }
 
-  // const isAllChecked = arrCheckboxes.some(el => el.checked)
 
     if(arrCheckboxes.some(oneChecked)){
       delCheckedAll.style.display="block";
@@ -231,8 +234,6 @@ const checkAllBoxes = () => {
       el.checked=false;
       checkAll.textContent="Check All";
       showBtns();
-    // }else if(onChecked){
-    //   checkAll.textContent="Uncheck All";
     }
     
     })
@@ -269,43 +270,98 @@ const hideCheckedAll = () => {
 
 
 
-//Pagination
+//Pagination on add task click
   const paginationOnAddClick = (item) => {
-  let currentPage = 0;
+  let currentPage = 1;
   let numberPerPage = 5;
   let numberOfPages = 0;
   let lis = document.getElementsByTagName('LI');
-  let arrLis = Array.prototype.slice.call( lis, 0 );
-  numberOfPages = Math.ceil(arrLis.length / numberPerPage);
+  let arrLis = Array.prototype.slice.call( lis);
+  numberOfPages = Math.floor(arrLis.length / numberPerPage);
   let taskList = document.getElementById('myUL');
   let screens = document.getElementById('screens');
-  if(arrLis.length > numberPerPage && arrLis.length % numberPerPage === 1){
-   
-    numberOfPages++;
-    let nextScreen = document.createElement('ul'); 
-    nextScreen.classList=('myUL nextUl');
-    screens.appendChild(nextScreen);
-    console.log((screens.childNodes[currentPage+2])); 
-    screens.children[currentPage].style.display="none";
-    screens.children[currentPage+1].appendChild(item);
-    
-  // }else if (arrLis.length % numberPerPage === 1){
-  //   screens.children[currentPage+1].appendChild(item);
-  // }
-}
-  }
-    
-  
-  
-    // nextScreens[1].appendChild(item);
-     
-    // nextScreen.previousElementSibling.style.display="none"; 
-    // console.log(nextScreen.previousElementSibling);
-    
-  
-    
-  
-  
+  let uls = document.getElementsByTagName('UL');
+  let arrUls = Array.prototype.slice.call( uls );
+  let paginationDiv = document.querySelector('.pagination');
+  let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
+  let page1 = document.querySelector('.page1');
+  let addInput = document.querySelector('#addInput');
   
  
+    if(arrLis.length > numberPerPage * (currentPage) && arrLis.length % numberPerPage === 1 && item.childNodes[1].textContent !== ''){
+      numberOfPages++;
+      currentPage++; 
+      arrUls.forEach(element => {
+        element.style.display="none";
+      });
+      let nextScreen = document.createElement('ul'); 
+      nextScreen.style.display="block";
+      nextScreen.appendChild(item);
+      screens.appendChild(nextScreen);
+      page1.style.display="block";
+      let paginationBtn = document.createElement('button');
+      paginationBtn.className=('pages');
+      paginationBtn.addEventListener('click', () =>{
+        onPageClick(nextScreen);
+      })
+      paginationBtn.textContent=numberOfPages;
+      
+      paginationBtnsDiv.appendChild(paginationBtn);
+      paginationDiv.appendChild(paginationBtnsDiv);
+  
+      }else if(arrLis.length % numberPerPage !==1 && arrLis.length > numberPerPage && item.childNodes[1].textContent !== ''){
+        screens.lastChild.appendChild(item);
+      }
+     
+}
+
+
+//Pagination on delete task click
+const paginationOnDeleteClick = (elem) => {
+  let currentPage = 1;
+  let numberPerPage = 5;
+  let numberOfPages = 0;
+  let lis = document.getElementsByTagName('LI');
+  let arrLis = Array.prototype.slice.call( lis);
+  numberOfPages = Math.floor(arrLis.length / numberPerPage);
+  let taskList = document.getElementById('myUL');
+  let screens = document.getElementById('screens');
+  let uls = document.getElementsByTagName('UL');
+  let arrUls = Array.prototype.slice.call( uls );
+  let paginationDiv = document.querySelector('.pagination');
+  let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
+  let page1 = document.querySelector('.page1');
+  let addInput = document.querySelector('#addInput');
+  let pageBtns = document.querySelectorAll('.pages');
+  // 
+  if(arrLis.length < 6 && arrLis.length % numberPerPage === 0){
+    numberOfPages--;
+    pageBtns[0].style.display="none";
+    pageBtns[1].style.display="none";
+    screens.firstElementChild.style.display="block";
+  }else if(arrLis.length % numberPerPage === 0 && arrLis.length > 6){
+      numberOfPages--;
+      paginationBtnsDiv.lastChild.remove();
+      screens.lastChild.previousElementSibling.style.display="block";  
+    }
+}
+//on pagination button click
+  const onPageClick = (item) => {
+  let siblings = item.parentNode.children;
+  let arrSiblings = Array.prototype.slice.call( siblings );
+  arrSiblings.forEach(sibling => {
+    sibling.style.display="none";
+  });
+  item.style.display="block";
+  }
+
+const pageOneClick = () => {
+  let taskList = document.getElementById('myUL');
+  let siblings = taskList.parentNode.children;
+  let arrSiblings = Array.prototype.slice.call( siblings );
+  arrSiblings.forEach(sibling => {
+    sibling.style.display="none";
+  });
+  taskList.style.display="block";
+  }
 
