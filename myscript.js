@@ -1,5 +1,6 @@
    let currentPage = 1;
    let numberPerPage = 5;
+   let pageCount = 1;
    
    
    const addTask = () => {
@@ -77,7 +78,7 @@
 
     //pagination
     calculateButtonsAmount(li);
-    // generateBtns(li);
+    
   }
   
   //Submit Add Task on enter
@@ -102,7 +103,10 @@
     //If all checked
     checkAllBoxes2();
     //pagination on delete click
-    generateBtns(item);
+    
+    deleteBtns(item);
+    moveItemToPreviousScreen(item);
+    
   }
 
   const editTask = (editBtn) => {
@@ -281,152 +285,151 @@ const calculateButtonsAmount = (item) => {
     let screens = document.getElementById('screens');
     
     let lis = document.getElementsByTagName('LI');
-    let arrLis = Array.prototype.slice.call( lis);
-    let uls = document.getElementsByTagName('UL');
-    let arrUls = Array.prototype.slice.call( uls );
-    if(arrLis.length > numberPerPage * (currentPage) && arrLis.length % numberPerPage === 1 && item.childNodes[1].textContent !== ''){
-         currentPage++;
-         console.log(currentPage);
-}
+    let arrLis = Array.prototype.slice.call( lis );
+    let delta = Math.ceil( arrLis.length / numberPerPage );
+    for (i = 0; i < arrLis.length; i=i+delta) {
+      console.log(arrLis[i]);
+    }
+    // console.log('------',Math.ceil(arrLis.length % 5))
+//     if(arrLis.length > numberPerPage * (currentPage) && arrLis.length % numberPerPage === 1 && item.childNodes[1].textContent !== '' && typeof(screens.children[currentPage])==='undefined'){
+//          currentPage++;
+//          pageCount++;
+//          generateBtns(item);
+//          displayItems(item);
+         
+         
+         
+// }else if(arrLis.length > 5 && arrLis.length % numberPerPage !== 1 && typeof(screens.children[currentPage])==='undefined'){
+//   let screens = document.getElementById('screens');
+//   screens.children[currentPage-1].appendChild(item);
+  
+// }else if(typeof(screens.children[currentPage])!=='undefined'){
+  
+//   currentPage++;
+//   screens.lastChild.appendChild(item);
+//   screens.lastChild.style.display="block";
+//   screens.children[currentPage-2].style.display="none";
+  
+  
+// }
 
 }
 
 
 
 // step 2: function which generates buttons  
-// const generateBtns = (item) => {
-//             let lis = document.getElementsByTagName('LI');
-//             let arrLis = Array.prototype.slice.call( lis);
-//             let paginationDiv = document.querySelector('.pagination');
-//             let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
-//             let pageBtns = document.querySelectorAll('.pages');
-//             if(arrLis.length > numberPerPage * (currentPage) && arrLis.length % numberPerPage === 1 && item.childNodes[1].textContent !== ''){
-//             let paginationBtn = document.createElement('button');
-//             paginationBtn.className=('pages');
-//             paginationBtn.addEventListener('click', () =>{
-//               onPageClick(nextScreen);
-              
-//             })
-//             paginationBtn.textContent=currentPage;
+const generateBtns = (item) => {
+            let lis = document.getElementsByTagName('LI');
+            let arrLis = Array.prototype.slice.call( lis );
+            let paginationDiv = document.querySelector('.pagination');
+            let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
+            let pageBtns = document.querySelectorAll('.pages');
+            let page1 = document.querySelector('.page1');
+            let paginationBtn = document.createElement('button');
+            paginationBtn.addEventListener('click', ()=> {
+              onPageClick(item);
+            })
+            paginationBtn.className=('pages');
+          
+            paginationBtn.textContent=currentPage;
             
-//             paginationBtnsDiv.appendChild(paginationBtn);
-//             paginationDiv.appendChild(paginationBtnsDiv);
-//           }else if(arrLis.length % numberPerPage === 0 && arrLis.length > 0 ){
-//             currentPage--;
-//             pageBtns[currentPage].style.display="none";
+            paginationBtnsDiv.appendChild(paginationBtn);
+            paginationDiv.appendChild(paginationBtnsDiv);
+            page1.style.display="block";
             
-//            }
-           
-//           }
+            
+}
+  const deleteBtns = (item) => {
+            let lis = document.getElementsByTagName('LI');
+            let arrLis = Array.prototype.slice.call( lis);
+            let screens = document.getElementById('screens');
+            let paginationDiv = document.querySelector('.pagination');
+            let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
+            let pageBtns = document.querySelectorAll('.pages');
+            let page1 = document.querySelector('.page1');
+            if(arrLis.length % numberPerPage === 0 && typeof(screens.children[currentPage]) === 'undefined' ){
+            currentPage--;
+            pageCount--;
+            pageBtns[pageCount].style.display="none";
+            displayItemsOnDeleteTodo(item);
+            
+            } else if (arrLis.length === 0){
+              pageBtns[0].style.display="none";
+            }
+          }
+                   
+          
 // step 3: function which displays items
+          const displayItems = (item) => {
+            let screens = document.getElementById('screens');
+            let nextScreen = document.createElement('ul'); 
+            nextScreen.style.display="block";
+            nextScreen.appendChild(item);
+            screens.appendChild(nextScreen);
+            screens.children[currentPage-2].style.display="none";
+            
+          
+          }
 
+          const displayItemsOnDeleteTodo = (item) => {
+            let lis = document.getElementsByTagName('LI');
+            let arrLis = Array.prototype.slice.call( lis);
+            if(arrLis.length > 0){
+            let screens = document.getElementById('screens');
+            screens.children[pageCount].style.display="none";
+             screens.children[pageCount-1].style.display="block";
+            }
+          }
+          
 
-//Pagination on add task click
+          const moveItemToPreviousScreen = (item) => {
+            let lis = document.getElementsByTagName('LI');
+            let arrLis = Array.prototype.slice.call( lis );
+            let screens = document.getElementById('screens');
+            let pageBtns = document.querySelectorAll('.pages');
+            if(typeof(screens.children[currentPage]) !== 'undefined'){
+              
+              if(screens.children[currentPage].children.length > 0){
+              screens.children[currentPage-1].appendChild(screens.children[currentPage].firstChild);
+              currentPage--;
+              if(arrLis.length % numberPerPage === 0){
+                
+                pageBtns[pageCount-1].style.display="none";
+            }
+            
+          }
+             
+          }
+        }
 
-
-//   const paginationOnAddClick = (item) => {
+// on pagination button click
+const onPageClick = (item) => {
+  let uls = document.getElementsByTagName('UL');
+  let arrUls = Array.prototype.slice.call( uls );
+  arrUls.forEach(sibling => {
+    sibling.style.display="none";
+  });
+  currentPage = arrUls.indexOf(item.parentElement) + 1;
   
-//   
-//   let numberOfPages = 0;
-//   let lis = document.getElementsByTagName('LI');
-//   let arrLis = Array.prototype.slice.call( lis);
-//   numberOfPages = Math.floor(arrLis.length / numberPerPage);
-//   let taskList = document.getElementById('myUL');
-//   let screens = document.getElementById('screens');
-//   let uls = document.getElementsByTagName('UL');
-//   let arrUls = Array.prototype.slice.call( uls );
-//   let paginationDiv = document.querySelector('.pagination');
-//   let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
-//   let page1 = document.querySelector('.page1');
-//   let addInput = document.querySelector('#addInput');
   
- 
-//     if(arrLis.length > numberPerPage * (currentPage) && arrLis.length % numberPerPage === 1 && item.childNodes[1].textContent !== ''){
-//       numberOfPages++;
-//       currentPage++;
-//       arrUls.forEach(element => {
-//         element.style.display="none";
-         
-//       });
-//       let nextScreen = document.createElement('ul'); 
-//       nextScreen.style.display="block";
-//       nextScreen.appendChild(item);
-//       screens.appendChild(nextScreen);
-//       page1.style.display="block";
-//       let paginationBtn = document.createElement('button');
-//       paginationBtn.className=('pages');
-//       paginationBtn.addEventListener('click', () =>{
-//         onPageClick(nextScreen);
-//       })
-//       paginationBtn.textContent=numberOfPages;
-      
-//       paginationBtnsDiv.appendChild(paginationBtn);
-//       paginationDiv.appendChild(paginationBtnsDiv);
+  item.parentElement.style.display="block";
   
-//       }else if(arrLis.length % numberPerPage !==1 && arrLis.length > numberPerPage && item.childNodes[1].textContent !== ''){
-//         screens.lastChild.appendChild(item);
-//         screens.lastChild.style.display="block";
-//         screens.lastChild.previousElementSibling.style.display="none";  
-//       }          
-// }
+  item.parentElement.parentElement.children[currentPage].style.display="block";
+  item.parentElement.parentElement.children[currentPage].style.display="block";
+  console.log(currentPage)
+  }
 
-//on pagination button click
-// const onPageClick = (item) => {
-//   let uls = document.getElementsByTagName('UL');
-//   let arrUls = Array.prototype.slice.call( uls );
-//   let currentPage = 1;
-//   let siblings = item.parentNode.children;
-//   let arrSiblings = Array.prototype.slice.call( siblings );
-//   arrSiblings.forEach(sibling => {
-//     sibling.style.display="none";
-//   });
-//   item.style.display="block";
-//   currentPage = arrUls.indexOf(item) + 1;
+const pageOneClick = () => {
+  let taskList = document.getElementById('myUL');
+  let siblings = taskList.parentElement.children;
+  let arrSiblings = Array.prototype.slice.call( siblings )
+  arrSiblings.forEach(sibling => sibling.style.display="none");
+  currentPage=1;
+  taskList.style.display="block";
   
-//   }
-
-// const pageOneClick = () => {
-//   let taskList = document.getElementById('myUL');
-//   let siblings = taskList.parentNode.children;
-//   let arrSiblings = Array.prototype.slice.call( siblings );
-//   arrSiblings.forEach(sibling => {
-//     sibling.style.display="none";
-//   });
-//   taskList.style.display="block";
-//   let currentPage = 1;
-//   }
+  }
 
 
-//Pagination on delete task click
-// const paginationOnDeleteClick = (elem) => {
-  
-//   let numberPerPage = 5;
-//   let numberOfPages = 1;
-//   let lis = document.getElementsByTagName('LI');
-//   let arrLis = Array.prototype.slice.call( lis);
-//   numberOfPages = Math.floor(arrLis.length / numberPerPage);
-//   let taskList = document.getElementById('myUL');
-//   let screens = document.getElementById('screens');
-//   let uls = document.getElementsByTagName('UL');
-//   let arrUls = Array.prototype.slice.call( uls );
-//   let paginationDiv = document.querySelector('.pagination');
-//   let paginationBtnsDiv = document.querySelector('.paginationBtnsDiv');
-//   let page1 = document.querySelector('.page1');
-//   let addInput = document.querySelector('#addInput');
-//   let pageBtns = document.querySelectorAll('.pages');
-  
-//   if(arrLis.length % numberPerPage === 0 && arrLis.length > 0 ){
-// currentPage--;
-// numberOfPages--;
-// pageBtns[numberOfPages+1].style.display="none";
-// screens.children[numberOfPages].style.display="block";
-// }else if(arrLis.length === 0){
-//   pageBtns[0].style.display="none";
-// }
-// else if(screens.children[currentPage] !== undefined){
-//   console.log(2);
-// }
-// }
 
 
   
