@@ -106,7 +106,7 @@ const deleteTask = (item) => {
   // calculateButtonsAmount();
 
   deleteBtns(item);
-  displayItemsOnDeleteTodo(item);
+  displayItemsOnDeleteTodo();
   moveItemToPreviousScreen(item);
 };
 
@@ -269,15 +269,30 @@ const hideCheckedAll = () => {
 //Pagination
 
 // step 1: function which calculates page count
-const calculateButtonsAmount = () => {
+const calculateButtonsAmount = (item) => {
   let lis = document.getElementsByTagName("LI");
   let arrLis = Array.prototype.slice.call(lis);
   let delta = Math.ceil(arrLis.length % numberPerPage);
-  let addInput = document.querySelector("#addInput");
-  if (delta === 1) {
-    pageCount++;
-    currentPage++;
+  let screens = document.getElementById("screens");
+  if (currentPage === 0) {
+    if (
+      delta === 1
+      // &&
+      // typeof screens.children[currentPage + 1] === "undefined"
+    ) {
+      pageCount++;
+      currentPage++;
+    }
+  } else if (currentPage > 0) {
+    if (
+      delta === 1
+      // && typeof screens.children[currentPage] === "undefined"
+    ) {
+      pageCount++;
+      currentPage++;
+    }
   }
+  console.log(currentPage, pageCount);
 };
 
 //step 2 generate buttons ~~ on pagination button click
@@ -292,7 +307,7 @@ const onPageClick = (item) => {
   screens.children[currentPage - 1].style.display = "block";
 };
 
-const generateBtns = () => {
+const generateBtns = (item) => {
   let lis = document.getElementsByTagName("LI");
   let arrLis = Array.prototype.slice.call(lis);
   let paginationBtnsDiv = document.querySelector(".paginationBtnsDiv");
@@ -306,16 +321,12 @@ const generateBtns = () => {
   }
 };
 
-const deleteBtns = () => {
+const deleteBtns = (item) => {
   let lis = document.getElementsByTagName("LI");
   let arrLis = Array.prototype.slice.call(lis);
   let screens = document.getElementById("screens");
   let pageBtns = document.querySelectorAll(".pages");
-  if (
-    arrLis.length % numberPerPage === 0 &&
-    arrLis.length > 0 &&
-    typeof screens.children[currentPage] === "undefined"
-  ) {
+  if (arrLis.length % numberPerPage === 0 && arrLis.length > 0) {
     currentPage--;
     pageCount--;
     pageBtns[pageCount].style.display = "none";
@@ -332,28 +343,34 @@ const displayItems = (item) => {
   if (arrLis.length % numberPerPage === 1 && arrLis.length > 5) {
     let screens = document.getElementById("screens");
     let nextScreen = document.createElement("ul");
-    nextScreen.appendChild(item);
     screens.appendChild(nextScreen);
-
+    screens.lastElementChild.style.display = "block";
+    screens.lastElementChild.appendChild(item);
     screens.children[currentPage - 2].style.display = "none";
   } else if (arrLis.length % numberPerPage !== 1 && arrLis.length > 5) {
     screens.lastElementChild.appendChild(item);
+    screens.lastChild.style.display = "block";
+    if (typeof screens.children[currentPage] !== "undefined") {
+      currentPage++;
+    }
     screens.children[currentPage - 2].style.display = "none";
   }
-  console.log(currentPage);
 };
 
-const displayItemsOnDeleteTodo = (item) => {
+const displayItemsOnDeleteTodo = () => {
   let lis = document.getElementsByTagName("LI");
   let arrLis = Array.prototype.slice.call(lis);
   let screens = document.getElementById("screens");
   if (
     arrLis.length > 0 &&
-    screens.children[currentPage - 1].children.length % numberPerPage === 0
+    arrLis.length % numberPerPage === 0 &&
+    typeof screens.children[pageCount] !== "undefined"
   ) {
-    screens.children[currentPage - 1].style.display = "block";
+    screens.lastChild.remove();
+    if (typeof screens.children[currentPage - 1] !== "undefined") {
+      screens.children[currentPage - 1].style.display = "block";
+    }
   }
-  console.log(currentPage);
 };
 
 const moveItemToPreviousScreen = (item) => {
@@ -362,14 +379,10 @@ const moveItemToPreviousScreen = (item) => {
   let screens = document.getElementById("screens");
   let pageBtns = document.querySelectorAll(".pages");
   if (typeof screens.children[currentPage] !== "undefined") {
-    if (screens.children[currentPage].children.length > 0) {
-      screens.children[currentPage - 1].appendChild(
-        screens.children[currentPage].firstChild
-      );
-
-      if (arrLis.length % numberPerPage === 0) {
-        pageBtns[pageCount - 1].style.display = "none";
-      }
-    }
+    alert(1);
+    currentPage++;
+    screens.children[currentPage - 2].appendChild(
+      screens.children[currentPage - 1].firstChild
+    );
   }
 };
