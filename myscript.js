@@ -1,6 +1,7 @@
-let currentPage = 0;
-let numberPerPage = 5;
-let pageCount = 0;
+let taskHolder = document.getElementById("myUL");
+let paginationBlock = document.getElementById("paginationBtnsDiv");
+let pageCount = 1;
+let currentPage = 1;
 
 const addTask = () => {
   //Create Full LI
@@ -76,9 +77,12 @@ const addTask = () => {
     onOneUnchecked();
 
     //pagination
-    calculateButtonsAmount(li);
-    generateBtns(li);
-    displayItems(li);
+    // calculateButtonsAmount(li);
+    // generateBtns(li);
+    // displayItems(li);
+    setPageCount();
+    renderPagination();
+    paginationDisplay();
   }
 };
 
@@ -105,9 +109,12 @@ const deleteTask = (item) => {
   //pagination on delete click
   // calculateButtonsAmount();
 
-  deleteBtns(item);
-  displayItemsOnDeleteTodo();
-  moveItemToPreviousScreen(item);
+  // deleteBtns(item);
+  // displayItemsOnDeleteTodo();
+  // moveItemToPreviousScreen();
+  setPageCount();
+  renderPagination();
+  paginationDisplay();
 };
 
 const editTask = (editBtn) => {
@@ -268,121 +275,36 @@ const hideCheckedAll = () => {
 
 //Pagination
 
-// step 1: function which calculates page count
-const calculateButtonsAmount = (item) => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  let delta = Math.ceil(arrLis.length % numberPerPage);
-  let screens = document.getElementById("screens");
-  if (currentPage === 0) {
-    if (
-      delta === 1
-      // &&
-      // typeof screens.children[currentPage + 1] === "undefined"
-    ) {
-      pageCount++;
-      currentPage++;
-    }
-  } else if (currentPage > 0) {
-    if (
-      delta === 1
-      // && typeof screens.children[currentPage] === "undefined"
-    ) {
-      pageCount++;
-      currentPage++;
-    }
+const setPageCount = () => {
+  const items = [...taskHolder.children];
+  pageCount = Math.ceil(items.length / 5);
+};
+setPageCount();
+const renderPagination = () => {
+  paginationBlock.innerHTML = "";
+  for (let i = 1; i <= pageCount; i++) {
+    let pageBtn = document.createElement("button");
+    pageBtn.id = "pageBtn";
+    pageBtn.addEventListener("click", () => {
+      currentPage = i;
+      paginationDisplay();
+    });
+
+    pageBtn.innerText = i;
+
+    paginationBlock.append(pageBtn);
   }
-  console.log(currentPage, pageCount);
 };
 
-//step 2 generate buttons ~~ on pagination button click
-const onPageClick = (item) => {
-  let uls = document.getElementsByTagName("UL");
-  let arrUls = Array.prototype.slice.call(uls);
-  let screens = document.getElementById("screens");
-  arrUls.forEach((sibling) => {
-    sibling.style.display = "none";
+const paginationDisplay = () => {
+  const items = [...taskHolder.children];
+  const start = (currentPage - 1) * 5;
+  const end = start + 5;
+  items.forEach((item, index) => {
+    if (index >= start && index < end) {
+      item.style.display = "flex";
+    } else {
+      item.style.display = "none";
+    }
   });
-  currentPage = parseInt(item.textContent);
-  screens.children[currentPage - 1].style.display = "block";
-};
-
-const generateBtns = (item) => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  let paginationBtnsDiv = document.querySelector(".paginationBtnsDiv");
-  paginationBtnsDiv.innerHTML = "";
-  for (let num = 1; num <= pageCount; num++) {
-    let button = document.createElement("button");
-    button.textContent = num;
-    button.className = "pages";
-    button.addEventListener("click", () => onPageClick(button));
-    paginationBtnsDiv.appendChild(button);
-  }
-};
-
-const deleteBtns = (item) => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  let screens = document.getElementById("screens");
-  let pageBtns = document.querySelectorAll(".pages");
-  if (arrLis.length % numberPerPage === 0 && arrLis.length > 0) {
-    currentPage--;
-    pageCount--;
-    pageBtns[pageCount].style.display = "none";
-  } else if (arrLis.length === 0) {
-    pageBtns[0].style.display = "none";
-    currentPage = 0;
-    pageCount = 0;
-  }
-};
-// step 3: function which displays items
-const displayItems = (item) => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  if (arrLis.length % numberPerPage === 1 && arrLis.length > 5) {
-    let screens = document.getElementById("screens");
-    let nextScreen = document.createElement("ul");
-    screens.appendChild(nextScreen);
-    screens.lastElementChild.style.display = "block";
-    screens.lastElementChild.appendChild(item);
-    screens.children[currentPage - 2].style.display = "none";
-  } else if (arrLis.length % numberPerPage !== 1 && arrLis.length > 5) {
-    screens.lastElementChild.appendChild(item);
-    screens.lastChild.style.display = "block";
-    if (typeof screens.children[currentPage] !== "undefined") {
-      currentPage++;
-    }
-    screens.children[currentPage - 2].style.display = "none";
-  }
-};
-
-const displayItemsOnDeleteTodo = () => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  let screens = document.getElementById("screens");
-  if (
-    arrLis.length > 0 &&
-    arrLis.length % numberPerPage === 0 &&
-    typeof screens.children[pageCount] !== "undefined"
-  ) {
-    screens.lastChild.remove();
-    if (typeof screens.children[currentPage - 1] !== "undefined") {
-      screens.children[currentPage - 1].style.display = "block";
-    }
-  }
-};
-
-const moveItemToPreviousScreen = (item) => {
-  let lis = document.getElementsByTagName("LI");
-  let arrLis = Array.prototype.slice.call(lis);
-  let screens = document.getElementById("screens");
-  let pageBtns = document.querySelectorAll(".pages");
-  if (typeof screens.children[currentPage] !== "undefined") {
-    alert(1);
-    currentPage++;
-    screens.children[currentPage - 2].appendChild(
-      screens.children[currentPage - 1].firstChild
-    );
-  }
 };

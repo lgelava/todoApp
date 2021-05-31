@@ -51,10 +51,11 @@ input {
   background: red;
 }
 
-li {
+.listItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row !important;
   margin-bottom: 10px;
   margin-top: 10px;
   width: 100%;
@@ -110,6 +111,6 @@ li p {
   align-items: center;
 }
 
-.pages {
+#pageBtn {
   background: green;
 }
