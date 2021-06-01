@@ -111,6 +111,6 @@ li p {
   align-items: center;
 }
 
-#pageBtn {
+.pageBtn {
   background: green;
 }

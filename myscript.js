@@ -1,5 +1,6 @@
 let taskHolder = document.getElementById("myUL");
 let paginationBlock = document.getElementById("paginationBtnsDiv");
+let inputAdd = document.getElementById("addInput");
 let pageCount = 1;
 let currentPage = 1;
 
@@ -47,7 +48,7 @@ const addTask = () => {
     let editSubmitText = document.createTextNode("Submit");
     editSubmit.appendChild(editSubmitText);
     editSubmit.addEventListener("click", () => {
-      return submitEdit(editSubmit);
+      return submitEdit(li);
     });
     editForm.appendChild(editSubmit);
     let editCancel = document.createElement("button");
@@ -55,17 +56,20 @@ const addTask = () => {
     let editCancelText = document.createTextNode("Cancel");
     editCancel.appendChild(editCancelText);
     editCancel.addEventListener("click", () => {
-      return cancelEdit(editCancel);
+      return cancelEdit(li);
     });
     editForm.appendChild(editCancel);
     li.appendChild(editForm);
     //Ouput Lis in Task List
     if (liTitle.textContent !== "") {
       taskList.appendChild(li);
+      if (liTitle.textContent.length > 15) {
+        liTitle.textContent = liTitle.textContent.substring(0, 10) + "...";
+      }
     }
 
     editBtn.addEventListener("click", () => {
-      return editTask(editBtn);
+      return editTask(li);
     });
     //Clear Input
     addInput.value = "";
@@ -75,20 +79,21 @@ const addTask = () => {
 
     //On one unchecked
     onOneUnchecked();
-
-    //pagination
-    // calculateButtonsAmount(li);
-    // generateBtns(li);
-    // displayItems(li);
     setPageCount();
     renderPagination();
+    //pagination
+    let lis = document.getElementsByTagName("LI");
+    let arrLis = Array.prototype.slice.call(lis);
+
+    if (arrLis.length % 5 === 1) {
+      currentPage = pageCount;
+    }
+
     paginationDisplay();
   }
 };
 
 //Submit Add Task on enter
-let inputAdd = document.getElementById("addInput");
-
 inputAdd.addEventListener("keyup", (e) => {
   if (e.keyCode === 13) {
     e.preventDefault();
@@ -100,96 +105,98 @@ const deleteTask = (item) => {
   item.parentNode.removeChild(item);
   //Hide CheckAll if needed
   hideCheckedAll();
-  //Make CHeck all/uncheck all after delete button is clicked
-  // checkAllBoxes();
   //If all unchecked hide deleteAllchecked
   allUnchecked();
   //If all checked
-  checkAllBoxesOnDeleteTask();
-  //pagination on delete click
-  // calculateButtonsAmount();
 
-  // deleteBtns(item);
-  // displayItemsOnDeleteTodo();
-  // moveItemToPreviousScreen();
+  checkAllBoxesOnDeleteTask();
+
   setPageCount();
   renderPagination();
+  let lis = document.getElementsByTagName("LI");
+  let arrLis = Array.prototype.slice.call(lis);
+
+  if (arrLis.length % 5 === 0) {
+    if (pageCount - currentPage >= 1) {
+    } else {
+      currentPage = pageCount;
+    }
+  }
   paginationDisplay();
 };
 
-const editTask = (editBtn) => {
-  //Display Hidden Edit Form
-  editBtn.nextSibling.style.display = "flex";
-  editBtn.nextSibling.childNodes[0].value =
-    editBtn.parentNode.childNodes[1].textContent;
-  //Hide Li
-  editBtn.parentNode.childNodes[0].style.display = "none";
-  editBtn.style.display = "none";
-  editBtn.parentNode.childNodes[1].style.display = "none";
-  editBtn.parentNode.childNodes[2].style.display = "none";
-  editBtn.parentNode.style.marginLeft = "-70px";
+const editTask = (li) => {
+  let editForm = li.querySelector(".editForm");
+  editForm.style.display = "flex";
+  editForm.children[0].value = li.children[1].textContent;
+  //Hide Li Checkbox, Text Content and Delete Btn
+  li.children[0].style.display = "none";
+  li.children[1].style.display = "none";
+  li.children[2].style.display = "none";
+  li.children[3].style.display = "none";
+  li.style.marginLeft = "-70px";
 };
 
-const cancelEdit = (editCancel) => {
+const cancelEdit = (li) => {
   //Cancel click
   //Hide Edit Form
-  editCancel.parentNode.style.display = "none";
+  let editForm = li.querySelector(".editForm");
+  editForm.style.display = "none";
   //Show Li
-  editCancel.parentNode.parentNode.childNodes[0].style.display = "block";
-  editCancel.parentNode.parentNode.childNodes[1].style = "block";
-  editCancel.parentNode.parentNode.childNodes[2].style.display = "flex";
-  editCancel.parentNode.previousSibling.style.display = "block";
-  editCancel.parentNode.previousSibling.parentNode.style.marginLeft = "0px";
+  li.children[0].style.display = "block";
+  li.children[1].style.display = "block";
+  li.children[2].style.display = "flex";
+  li.children[3].style.display = "block";
+  li.style.marginLeft = "0px";
 };
 
-const submitEdit = (editSubmit) => {
+const submitEdit = (li) => {
+  let editForm = li.querySelector(".editForm");
   //Submit Click
-  if (editSubmit.parentNode.childNodes[0].value === "") {
+  if (editForm.children[0].value === "") {
     alert("You should write something");
   } else {
-    editSubmit.parentNode.previousSibling.previousSibling.previousSibling.style.display =
-      "block";
-    editSubmit.parentNode.previousSibling.previousSibling.previousSibling.textContent =
-      editSubmit.previousSibling.value;
+    li.children[1].textContent = editForm.children[0].value;
     //Show Li
-    editSubmit.parentNode.parentNode.childNodes[0].style.display = "block";
-    editSubmit.parentNode.parentNode.childNodes[2].style.display = "flex";
-    editSubmit.parentNode.previousSibling.style.display = "block";
-
-    editSubmit.parentNode.previousSibling.parentNode.style.marginLeft = "0px";
-    //Hide Edit Form
-    editSubmit.parentNode.style.display = "none";
+    li.children[0].style.display = "block";
+    li.children[1].style.display = "block";
+    li.children[2].style.display = "flex";
+    li.children[3].style.display = "block";
+    editForm.style.display = "none";
+    li.style.marginLeft = "0px";
   }
 };
 
 //Delete All Checked
 const deleteAllChecked = () => {
   let checkboxes = document.querySelectorAll(".checkbox");
-  let incrementer3;
   let checkAll = document.getElementById("checkAll");
   let delCheckedAll = document.getElementById("delCheckedAll");
   delCheckedAll.style.display = "none";
-  for (incrementer3 = 0; incrementer3 < checkboxes.length; incrementer3++) {
-    if (checkboxes[incrementer3].checked) {
-      checkboxes[incrementer3].parentNode.remove();
+  for (let i = 0; i < checkboxes.length; i++) {
+    if (checkboxes[i].checked) {
+      checkboxes[i].parentNode.remove();
       checkAll.textContent = "Check All";
       //Hide checked all if needed
       hideCheckedAll();
     }
   }
+  setPageCount();
+  renderPagination();
+  paginationDisplay();
 };
 
 // Show bottom bottom buttons if checked
-const showBtns = (checkbox) => {
+
+const showBtns = () => {
   let checkAll = document.getElementById("checkAll");
   let delCheckedAll = document.getElementById("delCheckedAll");
   const allChecked = (item) => item.checked;
-  const allUnChecked = (item2) => item2.checked === false;
-  const oneChecked = (item3) => item3.checked;
-  const oneUnchecked = (item4) => item4.checked === false;
+  const allUnChecked = (box) => !box.checked;
+  const oneChecked = (checkbox) => checkbox.checked;
   let checkboxes = document.querySelectorAll(".checkbox");
   //checkboxes collection to an array
-  let arrCheckboxes = Array.prototype.slice.call(checkboxes, 0);
+  let arrCheckboxes = Array.prototype.slice.call(checkboxes);
   onOneUnchecked();
   if (arrCheckboxes.every(allChecked)) {
     checkAll.textContent = "Uncheck All";
@@ -204,10 +211,10 @@ const showBtns = (checkbox) => {
 
 const onOneUnchecked = () => {
   let checkAll = document.getElementById("checkAll");
-  const oneUnchecked = (item4) => item4.checked === false;
   let checkboxes = document.querySelectorAll(".checkbox");
+  const oneUnchecked = (checkbox) => !checkbox.checked;
   //checkboxes collection to an array
-  let arrCheckboxes = Array.prototype.slice.call(checkboxes, 0);
+  let arrCheckboxes = Array.prototype.slice.call(checkboxes);
   if (arrCheckboxes.some(oneUnchecked)) {
     checkAll.textContent = "Check All";
   }
@@ -218,8 +225,8 @@ const allUnchecked = () => {
   let checkboxes = document.querySelectorAll(".checkbox");
   let arrCheckboxes = Array.prototype.slice.call(checkboxes);
   let delCheckedAll = document.getElementById("delCheckedAll");
-  const checkIfAllUnChecked = arrCheckboxes.every((el) => el.checked === false);
-  if (checkIfAllUnChecked === true) {
+  const checkIfAllUnChecked = arrCheckboxes.every((el) => !el.checked);
+  if (checkIfAllUnChecked) {
     delCheckedAll.style.display = "none";
   }
 };
@@ -232,9 +239,8 @@ const checkAllBoxes = () => {
   //checkboxes collection to an array
   let arrCheckboxes = Array.prototype.slice.call(checkboxes);
   const checkIfAllChecked = arrCheckboxes.every((el) => el.checked);
-  const oneChecked = arrCheckboxes.some((el) => el.checked);
   return arrCheckboxes.map((el) => {
-    if (checkIfAllChecked === false) {
+    if (!checkIfAllChecked) {
       el.checked = true;
       checkAll.textContent = "Uncheck All";
       showBtns();
@@ -256,7 +262,7 @@ const checkAllBoxesOnDeleteTask = () => {
   const checkIfAllChecked = arrCheckboxes.every((el) => el.checked);
 
   return arrCheckboxes.map((el) => {
-    if (checkIfAllChecked === false) {
+    if (!checkIfAllChecked) {
       el.checked = false;
       checkAll.textContent = "Check All";
     } else {
@@ -279,12 +285,15 @@ const setPageCount = () => {
   const items = [...taskHolder.children];
   pageCount = Math.ceil(items.length / 5);
 };
+
 setPageCount();
+
 const renderPagination = () => {
   paginationBlock.innerHTML = "";
   for (let i = 1; i <= pageCount; i++) {
     let pageBtn = document.createElement("button");
     pageBtn.id = "pageBtn";
+    pageBtn.className = "pageBtn";
     pageBtn.addEventListener("click", () => {
       currentPage = i;
       paginationDisplay();
@@ -297,7 +306,10 @@ const renderPagination = () => {
 };
 
 const paginationDisplay = () => {
-  const items = [...taskHolder.children];
+  let lis = document.getElementsByTagName("LI");
+  let arrLis = Array.prototype.slice.call(lis);
+
+  const items = arrLis;
   const start = (currentPage - 1) * 5;
   const end = start + 5;
   items.forEach((item, index) => {
