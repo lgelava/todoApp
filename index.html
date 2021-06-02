@@ -1,15 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="mystyle.css">
-    <title>Document</title>
-</head>
-<body>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    
-<script src='mystyle.js'></script>    
-</body>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="mystyle.css" />
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="myDIV" class="header">
+        <input type="text" id="addInput" placeholder="Title..." />
+        <button class="addBtn" onclick="addTask()">Add</button>
+      </div>
+      <div class="pagination">
+        <div id="screens">
+          <ul id="myUL" class="myUL"></ul>
+        </div>
+        <div class="paginationBtnsDiv" id="paginationBtnsDiv"></div>
+      </div>
+      <div class="bottomButtons">
+        <button onclick="checkAllBoxes()" id="checkAll">Check All</button>
+        <button onclick="deleteAllChecked()" id="delCheckedAll">
+          Delete all checked
+        </button>
+      </div>
+    </div>
+    <!-- <div style="text-align:center;">
+      <input type="button" id="first" onclick="firstPage()" value="first" />
+      <input type="button" id="next" onclick="nextPage()" value="next" />
+      <input type="button" id="previous" onclick="previousPage()" value="previous" />
+      <input type="button" id="last" onclick="lastPage()" value="last" />
+  
+      <div id="list"></div>
+      </div> -->
+    <script src="myscript.js"></script>
+  </body>
 </html>
